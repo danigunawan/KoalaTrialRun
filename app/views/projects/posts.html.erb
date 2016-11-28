@@ -1,0 +1,68 @@
+<div class='col-sm-offset-2 col-xs-offset-2 col-lg-offset-2 col-md-offset-2 col-lg-8 col-md-8 col-sm-8 col-xs-8'>
+<% if @feed_posts.present? %>
+<%= form_tag update_post_path, method: :get do %>
+  <div class='pull-left'>
+    <%= submit_tag "Submit Form" %>
+  </div>
+  <div class='pull-right'>
+    <%= select_tag "filter-feed", raw("<option>Unread</option><option>Read</option><option>Liked</option><option>Not Liked</option>") %>
+  </div>
+  <div class='clearfix'></div>
+  <% @feed_posts.each do |page_post| %>
+
+    <div class='panel panel-default'>
+      <div class='list-group'>
+      <div class='panel-content'>
+        <div class='list-group-item'>
+          <%=  page_post.message %>
+          <div class='pull-right'><%= "Posted by: #{page_post.from} on  #{page_post.created_time}" %></div>
+          <div class='actions'>
+            <button type='button' class='comment-on-post'>Comment</button>
+            <div class='text-area-post'></div>
+            <%= check_box_tag 'like_ids[]', page_post.id %>
+            <%= page_post.has_liked ? "LIKED" : "UNLIKE/NO LIKE" %>
+          </div>
+        </div>
+      </div>
+      <div class='panel-footer'>
+        <% if page_post.comments.present? %>
+        <div class='list-group'>
+          <% page_post.comments.each do |comment| %>
+          <div class='list-group-item'>
+            <%=  comment.message %>
+            <div class='pull-right'><%= "Posted by: #{comment.from} on  #{comment.created_time}" %></div>
+            <div class='clearfix'></div>
+            <div class='actions'>
+              <button type='button' class='comment-on-post'>Comment</button>
+              <div class='text-area-post'></div>
+              <%= check_box_tag 'like_ids[]', comment.id %>
+              <%= comment.has_liked ? "LIKED" : "UNLIKE/NO LIKE" %>
+            </div>
+            <% if comment.comments.present? %>
+            <div class='list-group'>
+              <% comment.comments.each do |reply| %>
+              <div class='list-group-item'>
+                <%=  reply.message %>
+                <div class='pull-right'><%= "Posted by: #{reply.from} on  #{reply.created_time}" %></div>
+                <div class='clearfix'></div>
+                <%= check_box_tag 'like_ids[]', reply.id %>
+                <%= reply.has_liked ? "LIKED" : "UNLIKE/NO LIKE" %>
+              </div>
+              <% end %>
+            </div>
+            <% end %>
+          </div>
+          <% end %>
+        </div>
+        <% end %>
+      </div>
+      </div>
+    </div>
+  <% end %>
+  <%= hidden_field_tag 'page_id', @page_id %>
+<% end %>
+<% end %>
+</div>
+<div class='col-lg-3 col-md-3 col-sm-3'>
+
+</div>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Facebook Multiple Users</title>
+    <%= csrf_meta_tags %>
+
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+    <div id="fb-root"></div>
+    <% if notice.present? %>
+    <p class="notice"><%= notice %></p>
+    <% end %>
+    <% if alert.present? %>
+      <p class="alert"><%= alert %></p>
+    <% end %>
+    <% if user_signed_in? %>
+      <ul class="nav nav-pills">
+        <% if @project.present? %>
+        <li class='nav-item'>
+          <%= @project.email %>
+        </li>
+        <li class="nav-item">
+          <%= link_to 'Pages List', root_path, class: 'nav-link' %>
+        </li>
+        <li class="nav-item">
+          <%= link_to 'Permissions', permissions_path, class: 'nav-link' %>
+        </li>
+        <li class="nav-item">
+          <%= link_to 'Deselect Project', clear_session_path, class: 'nav-link', id: 'sign_out' %>
+        </li>
+        <% else %>
+        <li class="nav-item">
+          <% url = @oauth.url_for_oauth_code(:permissions => ENV['FACEBOOK_SCOPE'].gsub(' ', ',')) %>
+          <%= link_to "Login Facebook Account", url, id: 'sign_in' %>
+        </li>
+        <li class="nav-item">
+          <%= link_to 'Logout', destroy_user_session_path, method: :delete %>
+        </li>
+        <% end %>
+      </ul>
+    <% end %>
+    <div class='row'>
+      <div class='col-lg-12 col-md-12 col-xs-12'>
+        <%= yield %>
+      </div>
+    </div>
+  </body>
+</html>
